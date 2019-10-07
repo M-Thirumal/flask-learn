@@ -12,7 +12,9 @@ name_space = app.namespace('names', description='Manage names')
 model = app.model('Name Model',
                   {'name': fields.String(required=True,
                                          description="Name of the person",
-                                         help="Name cannot be blank.")})
+                                         help="Name cannot be blank."),
+                   'age': fields.Integer(required=False,
+                                         description="Age of person")})
 
 list_of_names = {}
 
@@ -33,6 +35,13 @@ class MainClass(Resource):
             name_space.abort(500, e.__doc__, status="Could not retrieve information", statusCode="500")
         except Exception as e:
             name_space.abort(400, e.__doc__, status="Could not retrieve information", statusCode="400")
+
+    @app.doc(responses={200: 'OK', 400: 'Invalid Argument'})
+    def get(self):
+        try:
+            return list_of_names;
+        except Exception as e:
+            name_space.abort(400, e.__doc__, status="Could not retrive informations", statusCode="400")
 
     @app.doc(responses={200: 'OK', 400: 'Invalid Argument', 500: 'Mapping Key Error'},
              params={'id': 'Specify the Id associated with the person'})
